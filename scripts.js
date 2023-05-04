@@ -37,11 +37,15 @@ generateBtn.addEventListener("click", async () => {
 });
 
 async function fetchGptResponse(prompt, apiKey, previousOutput) {
-    const response = await fetch("https://api.openai.com/v1/engines/davinci-codex/completions", {
-        method: "POST",
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const targetUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
+
+    const response = await fetch(proxyUrl + targetUrl, {
+        method: 'POST',
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+            'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify({
             prompt: `${previousOutput}\n\n${prompt}`,
@@ -53,7 +57,7 @@ async function fetchGptResponse(prompt, apiKey, previousOutput) {
     });
 
     if (!response.ok) {
-        throw new Error("Failed to fetch GPT response");
+        throw new Error('Failed to fetch GPT response');
     }
 
     const data = await response.json();
